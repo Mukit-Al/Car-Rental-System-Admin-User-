@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadway Car Rental</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar" id="navbar" style="display: none;">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <img src="logo.png" alt="Roadway Car Rental" class="company-logo">
+                    <h1>Roadway Car Rental</h1>
+                </div>
+                <div class="nav-menu">
+                    <button class="nav-btn" onclick="showPage('home')">Home</button>
+                    <button class="nav-btn" onclick="showPage('cars')">Cars</button>
+                    <button class="nav-btn" id="dashboardBtn" onclick="showPage('dashboard')">Dashboard</button>
+                    <button class="nav-btn" id="adminBtn" onclick="showPage('admin')" style="display: none;">Admin</button>
+                    <button class="nav-btn logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Landing Page -->
+        <div id="landingPage" class="page">
+            <div class="hero">
+                <h1>Welcome to Roadway Car Rental</h1>
+                <p>Your premium car rental solution</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="showPage('login')">Login</button>
+                    <button class="btn btn-secondary" onclick="showPage('register')">Register</button>
+                </div>
+            </div>
+            <div class="features">
+                <div class="feature-card">
+                    <h3>🚗 Premium Fleet</h3>
+                    <p>Wide selection of quality vehicles</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚡ Easy Booking</h3>
+                    <p>Simple and fast rental process</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💰 Best Prices</h3>
+                    <p>Competitive rates for all budgets</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div id="loginPage" class="page" style="display: none;">
+            <div class="auth-container">
+                <div class="auth-box">
+                    <h2>Login</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginUsername">Username</label>
+                            <input type="text" id="loginUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <p class="auth-link">
+                        Don't have an account? <a href="#" onclick="showPage('register')">Register</a>
+                    </p>
+                    <button class="btn btn-back" onclick="showPage('landing')">Back</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div id="registerPage" class="page" style="display: none;">
+            <div class="auth-container">
+                <div class="auth-box">
+                    <h2>Register</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="regUsername">Username</label>
+                            <input type="text" id="regUsername" required minlength="3">
+                        </div>
+                        <div class="form-group">
+                            <label for="regEmail">Email</label>
+                            <input type="email" id="regEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regFullName">Full Name</label>
+                            <input type="text" id="regFullName">
+                        </div>
+                        <div class="form-group">
+                            <label for="regPassword">Password</label>
+                            <input type="password" id="regPassword" required minlength="6">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                    <p class="auth-link">
+                        Already have an account? <a href="#" onclick="showPage('login')">Login</a>
+                    </p>
+                    <button class="btn btn-back" onclick="showPage('landing')">Back</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cars Page -->
+        <div id="carsPage" class="page" style="display: none;">
+            <div class="page-container">
+                <h2>Available Cars</h2>
+                <div class="filter-bar">
+                    <select id="sortFilter" onchange="sortCars()">
+                        <option value="featured">Featured</option>
+                        <option value="price_low">Price: Low to High</option>
+                        <option value="price_high">Price: High to Low</option>
+                        <option value="newest">Newest First</option>
+                    </select>
+                </div>
+                <div id="carsGrid" class="cars-grid"></div>
+            </div>
+        </div>
+
+        <!-- User Dashboard -->
+        <div id="dashboardPage" class="page" style="display: none;">
+            <div class="page-container">
+                <h2>My Dashboard</h2>
+                <div class="dashboard-tabs">
+                    <button class="tab-btn active" onclick="showTab('myRentals')">My Rentals</button>
+                    <button class="tab-btn" onclick="showTab('browse')">Browse Cars</button>
+                </div>
+                <div id="myRentalsTab" class="tab-content">
+                    <div id="myRentals" class="rentals-list"></div>
+                </div>
+                <div id="browseTab" class="tab-content" style="display: none;">
+                    <div class="filter-bar">
+                        <select id="browseSortFilter" onchange="sortBrowseCars()">
+                            <option value="featured">Featured</option>
+                            <option value="price_low">Price: Low to High</option>
+                            <option value="price_high">Price: High to Low</option>
+                            <option value="newest">Newest First</option>
+                        </select>
+                    </div>
+                    <div id="browseCars" class="cars-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminPage" class="page" style="display: none;">
+            <div class="page-container">
+                <h2>Admin Dashboard</h2>
+                <div class="dashboard-tabs">
+                    <button class="tab-btn active" onclick="showAdminTab('manageCars')">Manage Cars</button>
+                    <button class="tab-btn" onclick="showAdminTab('manageUsers')">Manage Users</button>
+                    <button class="tab-btn" onclick="showAdminTab('allRentals')">All Rentals</button>
+                </div>
+                <div id="manageCarsTab" class="tab-content">
+                    <button class="btn btn-primary" onclick="showAddCarModal()">Add New Car</button>
+                    <div id="adminCars" class="cars-grid"></div>
+                </div>
+                <div id="manageUsersTab" class="tab-content" style="display: none;">
+                    <div id="isBobSection" style="display: none;">
+                        <button class="btn btn-primary" onclick="showAddUserModal()">Add New User</button>
+                    </div>
+                    <div class="user-sections">
+                        <div class="user-section">
+                            <h3>Admins & Employees</h3>
+                            <div id="adminUsers" class="users-list"></div>
+                        </div>
+                        <div class="user-section">
+                            <h3>Members</h3>
+                            <div id="regularUsers" class="users-list"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="allRentalsTab" class="tab-content" style="display: none;">
+                    <div id="adminRentals" class="rentals-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Car Modal -->
+        <div id="addCarModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>Add New Car</h3>
+                <form id="addCarForm" onsubmit="handleAddCar(event)">
+                    <div class="form-group">
+                        <label for="carName">Car Name</label>
+                        <input type="text" id="carName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carBrand">Brand</label>
+                        <input type="text" id="carBrand" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carModel">Model</label>
+                        <input type="text" id="carModel" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carYear">Year</label>
+                        <input type="number" id="carYear" min="1900" max="2100">
+                    </div>
+                    <div class="form-group">
+                        <label for="carSeats">Seats</label>
+                        <input type="number" id="carSeats" required min="1" max="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="carTransmission">Transmission</label>
+                        <input type="text" id="carTransmission" placeholder="Automatic/Manual">
+                    </div>
+                    <div class="form-group">
+                        <label for="carFuelType">Fuel Type</label>
+                        <input type="text" id="carFuelType" placeholder="Petrol/Diesel/Electric">
+                    </div>
+                    <div class="form-group">
+                        <label for="carPrice">Rent Price per Day ($)</label>
+                        <input type="number" id="carPrice" required min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="carDiscount">Discount Percentage (%)</label>
+                        <input type="number" id="carDiscount" min="0" max="100" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="carPromoted"> Promote on Home Page
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="carDescription">Description</label>
+                        <textarea id="carDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="carImages">Car Images (Multiple)</label>
+                        <input type="file" id="carImages" multiple accept="image/*">
+                        <div id="imagePreview" class="image-preview"></div>
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn btn-primary">Add Car</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Rent Car Modal -->
+        <div id="rentCarModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>Rent Car</h3>
+                <form id="rentCarForm" onsubmit="handleRentCar(event)">
+                    <input type="hidden" id="rentCarId">
+                    <div class="form-group">
+                        <label for="rentStartDate">Start Date</label>
+                        <input type="datetime-local" id="rentStartDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rentEndDate">End Date (Optional)</label>
+                        <input type="datetime-local" id="rentEndDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="rentNotes">Notes</label>
+                        <textarea id="rentNotes" rows="3"></textarea>
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn btn-primary">Confirm Rental</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Car Modal -->
+        <div id="editCarModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>Edit Car</h3>
+                <form id="editCarForm" onsubmit="handleEditCar(event)">
+                    <input type="hidden" id="editCarId">
+                    <div class="form-group">
+                        <label for="carName">Car Name</label>
+                        <input type="text" id="editCarName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carBrand">Brand</label>
+                        <input type="text" id="editCarBrand" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carModel">Model</label>
+                        <input type="text" id="editCarModel" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carYear">Year</label>
+                        <input type="number" id="editCarYear" min="1900" max="2100">
+                    </div>
+                    <div class="form-group">
+                        <label for="carSeats">Seats</label>
+                        <input type="number" id="editCarSeats" required min="1" max="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="carTransmission">Transmission</label>
+                        <input type="text" id="editCarTransmission" placeholder="Automatic/Manual">
+                    </div>
+                    <div class="form-group">
+                        <label for="carFuelType">Fuel Type</label>
+                        <input type="text" id="editCarFuelType" placeholder="Petrol/Diesel/Electric">
+                    </div>
+                    <div class="form-group">
+                        <label for="carPrice">Rent Price per Day ($)</label>
+                        <input type="number" id="editCarPrice" required min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="carDiscount">Discount Percentage (%)</label>
+                        <input type="number" id="editCarDiscount" min="0" max="100" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="editCarPromoted"> Promote on Home Page
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCarStatus">Status</label>
+                        <select id="editCarStatus">
+                            <option value="available">Available</option>
+                            <option value="rented">Rented</option>
+                            <option value="maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="carDescription">Description</label>
+                        <textarea id="editCarDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCarImages">Add More Images (Multiple)</label>
+                        <input type="file" id="editCarImages" multiple accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Images</label>
+                        <div id="editCarCurrentImages" class="image-preview"></div>
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn btn-primary">Update Car</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add User Modal -->
+        <div id="addUserModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>Add New User</h3>
+                <form id="addUserForm" onsubmit="handleAddUser(event)">
+                    <div class="form-group">
+                        <label for="newUsername">Username</label>
+                        <input type="text" id="newUsername" required minlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmail">Email</label>
+                        <input type="email" id="newEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newFullName">Full Name</label>
+                        <input type="text" id="newFullName">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Password</label>
+                        <input type="password" id="newPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserRole">Role</label>
+                        <select id="newUserRole">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn btn-primary">Add User</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Car Detail Modal -->
+        <div id="carDetailModal" class="modal" style="display: none;">
+            <div class="modal-content car-detail-modal">
+                <button class="close-btn" onclick="closeCarDetail()">×</button>
+                <div class="car-detail-content">
+                    <div class="car-detail-images">
+                        <button class="nav-arrow prev-arrow" onclick="navigateImage(-1)">❮</button>
+                        <div class="main-image-container">
+                            <img id="detailMainImage" src="" alt="Car" class="detail-main-image">
+                            <button class="zoom-btn" onclick="toggleZoom()">🔍</button>
+                        </div>
+                        <button class="nav-arrow next-arrow" onclick="navigateImage(1)">❯</button>
+                    </div>
+                    <div class="car-detail-info">
+                        <h2 id="detailCarName"></h2>
+                        <p id="detailCarBrand" class="detail-brand"></p>
+                        <div class="detail-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Year</span>
+                                <span id="detailYear"></span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Seats</span>
+                                <span id="detailSeats"></span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Transmission</span>
+                                <span id="detailTransmission"></span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Fuel Type</span>
+                                <span id="detailFuelType"></span>
+                            </div>
+                        </div>
+                        <div class="detail-price-section">
+                            <p id="detailPrice" class="detail-price"></p>
+                            <p id="detailDescription" class="detail-description"></p>
+                        </div>
+                        <div class="detail-actions">
+                            <button class="btn btn-primary btn-large" onclick="rentFromDetail()">Rent This Car</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
